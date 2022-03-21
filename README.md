@@ -39,15 +39,14 @@ E|------------------------------------
 * `1:3` - 1st string, 3rd fret
 * `1:3>2:2` - 1st string, 3rd fret, then 2nd string, 2st fret
 * `1:3>>2:2` - same as above, but with extra space in between
-* `G` or `C`, etc. - Use chord names
-  (Supported: A/Am/B/Bm/C/Cm/D/Dm/E/Em/F/Fm/G/Gm/A7/B7/D7/E7/G7)
-* `C+6:3` - Override a chord with whatever notes you want
 * `# Song name...` - Header above the notes listing
 * `1:3+4:2` - Combination of note at the same time
-* `L3002xx` - Alternative to combination of notes (not supported yet)
+* `L3002xx` - Alternative to combination of notes
 * `2h3` - Hammer on from 2 to 3
 * `3p2` - Pull-off from 3 to 2
 * `1:3v` - Vibrate on 3rd fret in 1st string
 * `/` or `\\` - slide up or down, respectively
-* `C>F#>B7` - Chords by names (not supported yet)
+* `C>F#>B7` - Chords by names
+  (Supported: A/Am/B/Bm/C/Cm/D/Dm/E/Em/F/Fm/G/Gm/A7/B7/D7/E7/G7)
+* `C+6:3` - Override a chord with whatever notes you want
 * `... X 3` - `...` should be repeated 3 times (not supported yet)
