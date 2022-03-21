@@ -4,6 +4,28 @@ use warnings;
 use experimental qw< signatures >;
 use Getopt::Long qw< :config no_ignore_case >;
 
+our %CHORDS = (
+    'A'  => 'L02220x',
+    'Am' => 'L01220x',
+    'B'  => 'L24442x',
+    'Bm' => 'L23442x',
+    'C'  => 'L01023x',
+    'Cm' => 'L34553x',
+    'D'  => 'L2320xx',
+    'Dm' => 'L1320xx',
+    'E'  => 'L001220',
+    'Em' => 'L000220',
+    'F'  => 'L112331',
+    'Fm' => 'L111331',
+    'G'  => 'L300023',
+    'Gm' => 'L333553',
+    'A7' => 'L02020x',
+    'B7' => 'L20212x',
+    'D7' => 'L2120xx',
+    'E7' => 'L001020',
+    'G7' => 'L100023',
+);
+
 sub render (@input) {
     foreach my $input (@input) {
         my @stave;
@@ -24,8 +46,6 @@ sub render (@input) {
             'E|',
         );
 
-        # 1:2
-        # 1:3+3:2+4:5+6:9
         foreach my $part (@parts) {
             if (!$part) {
                 add_column( \@stave, map '-', 1 .. 6 );
@@ -36,8 +56,22 @@ sub render (@input) {
             my %notes;
 
             foreach my $note_pair (@note_pairs) {
-                my ( $string, $note ) = split /:/xms, $note_pair;
-                $notes{$string} = $note;
+                if ( $note_pair =~ /:/xms ) {
+                    my ( $string, $note ) = split /:/xms, $note_pair;
+                    $notes{$string} = $note;
+                    next;
+                }
+
+                if ( $CHORDS{$note_pair} ) {
+                    $note_pair = $CHORDS{$note_pair};
+                }
+
+                if ( $note_pair =~ /^L([0-9x]{6})$/xms ) {
+                    my $string = 0;
+                    while ( $string++ <= 6 ) {
+                        $notes{$string} = substr $note_pair, $string, 1;
+                    }
+                }
             }
 
             my $max_length = ( sort { $b <=> $a } map length, values %notes )[0];
@@ -97,6 +131,9 @@ sub print_help {
     1:3             - 1st string, 3rd fret
     1:3>2:2         - 1st string, 3rd fret, then 2nd string, 2st fret
     1:3>>2:2        - same as above, but with extra space in between
+    G               - Chord names
+                      (Supported: A/Am/B/Bm/C/Cm/D/Dm/E/Em/F/Fm/G/Gm/A7/B7/D7/E7/G7)
+    C+6:3           - Override a chord with whatever notes you want
     # Song name...  - Header above the notes listing
     1:3+4:2         - Combination of notes at the same time
     2h3             - Hammer on from 2 to 3
