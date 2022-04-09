@@ -124,7 +124,8 @@ sub print_help {
 
     OPTIONS:
 
-    --help | -h     Print this help menu
+    --help | -h         Print this help menu
+    --file | -f FILE    Render the file FILE
 
     SYNTAX:
 
@@ -147,13 +148,30 @@ sub print_help {
     exit 0;
 }
 
+my $filename;
 my $input;
 GetOptions(
-    'help|h' => sub { print_help(); },
-    '<>'     => sub { $input = shift },
+    'help|h'   => sub { print_help(); },
+    'file|f=s' => \$filename,
+    '<>'       => sub { $input = shift },
 );
 
-$input
-    or print_help();
+$input && $filename
+    and print_help("Can't use both input and file - choose one");
 
-render($input);
+if ($filename) {
+    open my $fh, '<', $filename
+        or die "Cannot open '$filename': $!\n";
+
+    chomp( my @input = <$fh> );
+
+    render($_) for grep length, @input;
+
+    close $fh
+        or die "Cannot close '$filename': $!\n";
+} elsif ($input) {
+    render($input);
+} else {
+    print_help();
+}
+
